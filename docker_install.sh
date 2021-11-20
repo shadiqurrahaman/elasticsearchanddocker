@@ -9,29 +9,11 @@ if [ -x "$(command -v docker)" ]; then
     then
         echo "Removing Docker Dersion"
         #apt-get remove docker docker-engine docker.io containerd runc
-        sudo apt-get purge -y docker-engine docker docker.io docker-ce docker-ce-cli
+        apt-get purge -y docker-engine docker docker.io docker-ce docker-ce-cli
         echo "installing Docker"
+        source docker_install_process.sh 
+        install_docker
         
-        apt-get update
-	echo "-------------------------------------------------1"
-	apt-get install \
-	    ca-certificates \
-	    curl \
-	    gnupg \
-	    lsb-release
-	echo "-------------------------------------------------2"
-	 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-
-	echo \
-	  "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
-	  $(lsb_release -cs) stable nightly" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-
-	apt-get update
-
-	apt-get install docker-ce docker-ce-cli containerd.io
-	sudo apt install docker-ce
-	docker run hello-world
-
     else
     
         echo "Docker version is up to date"
@@ -39,24 +21,13 @@ if [ -x "$(command -v docker)" ]; then
     
 else
     echo "installing Docker"
-
-    apt-get update
-    echo "-------------------------------------------------1"
-    apt-get install \
-	ca-certificates \
-	curl \
-	gnupg \
-	lsb-release
-    echo "-------------------------------------------------2"
-    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-
-    echo \
-    "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
-    $(lsb_release -cs) stable nightly" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-
-    apt-get update
-
-    apt-get install docker-ce docker-ce-cli containerd.io
-    sudo apt install docker-ce
-    docker run hello-world
+    
+    source docker_install_process.sh 
+    install_docker
 fi
+
+#docker network create elastic
+docker pull docker.elastic.co/elasticsearch/elasticsearch:7.12.0
+docker pull docker.elastic.co/kibana/kibana:7.12.0
+
+
